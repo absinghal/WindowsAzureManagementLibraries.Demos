@@ -21,23 +21,11 @@ using System.Xml.Linq;
 
 namespace WamlDemos
 {
-
-
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
-
-            var traceAction = new Action<string>(trace =>
-            {
-                Dispatcher.Invoke(() => _trace.Text =
-                    trace + Environment.NewLine + _trace.Text);
-            });
-
-            CloudContext.Configuration.Tracing.AddTracingInterceptor(
-                new WpfAppTracingInterceptor(traceAction)
-                );
         }
 
         List<PublishSettingsSubscriptionItem> _subscriptionItems =
@@ -96,6 +84,12 @@ namespace WamlDemos
                 x.SubscriptionName == (string)_subscriptions.SelectedItem);
 
             await GetRegionList();
+        }
+
+        private void OnTraceMenuItemClicked(object sender, RoutedEventArgs e)
+        {
+            var traceWindow = new TraceWindow();
+            traceWindow.Show();
         }
     }
 
