@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="WamlDemos.StorageAccountManagement"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WamlDemos"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="500">
+
+    <UserControl.CommandBindings>
+        <CommandBinding Command="{x:Static local:Commands.CreateNewStorageAccount}"
+                        Executed="OnNewStorageAccountCreateRequest"/>
+    </UserControl.CommandBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="1*"/>
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="Existing Storage Accounts"
+                   Grid.Row="0"/>
+        <ListBox x:Name="_storageAccounts"
+                 Grid.Row="1" SelectionChanged="_storageAccounts_SelectionChanged">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Content" Value="{Binding ServiceName}"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>
+        <TextBlock Text="Connection String"
+                   Grid.Row="2"/>
+        <TextBox x:Name="_connectionString" TextWrapping="Wrap" 
+                 AcceptsReturn="True" 
+                 Grid.Row="3"/>
+        <TextBlock Text="New Storage Account"
+                   Grid.Row="4"/>
+        <StackPanel Orientation="Vertical"
+                    Grid.Row="5">
+            <TextBlock Text="Storage Account Name"/>
+            <TextBox x:Name="_newStorageAccountName"/>
+            <Button x:Name="_createStorageAccount" Content="Create" Click="_createStorageAccount_Click"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

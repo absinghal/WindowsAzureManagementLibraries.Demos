@@ -26,70 +26,93 @@ namespace WamlDemos
         public MainWindow()
         {
             InitializeComponent();
+
+            Commands.SubscriptionSelectedEvent += OnSubscriptionSelected;
         }
 
-        List<PublishSettingsSubscriptionItem> _subscriptionItems =
-            new List<PublishSettingsSubscriptionItem>();
+        List<PublishSettingsSubscriptionItem> _subscriptionItems = new List<PublishSettingsSubscriptionItem>();
 
-        PublishSettingsSubscriptionItem _selectedSubscription;
+        IList<Microsoft.WindowsAzure.Management.Models.LocationsListResponse.Location> _locations;
+
+        public PublishSettingsSubscriptionItem SelectedSubscription { get; set;  }
 
         private async System.Threading.Tasks.Task GetRegionList()
         {
+            Commands.SetStatus.Execute("Getting Regions", this);
+
             using (var client = new ManagementClient(
-                new CertificateCloudCredentials(_selectedSubscription.SubscriptionId,
+                new CertificateCloudCredentials(SelectedSubscription.SubscriptionId,
                     new X509Certificate2(Convert.FromBase64String(
-                        _selectedSubscription.ManagementCertificate)))))
+                        SelectedSubscription.ManagementCertificate)))))
             {
                 var result = await client.Locations.ListAsync();
                 var regions = result.Locations.Select(x => x.Name);
-                _regions.ItemsSource = regions;
-            }
-        }
-
-        private void _selectPubSettings_Click(object sender, RoutedEventArgs e)
-        {
-            var dlg = new OpenFileDialog();
-            dlg.FileOk += dlg_FileOk;
-            dlg.Filter = "Publish Settings Files|*.publishsettings";
-            dlg.ShowDialog();
-        }
-
-        void dlg_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            using (var fs = File.OpenRead(((OpenFileDialog)sender).FileName))
-            {
-                _subscriptionItems.Clear();
-
-                var document = XDocument.Load(fs);
-                var subscriptions = document.Element("PublishData")
-                    .Element("PublishProfile").Elements("Subscription");
-
-                subscriptions.ToList().ForEach(subscriptionNode =>
-                {
-                    _subscriptionItems.Add(new PublishSettingsSubscriptionItem
-                    {
-                        ManagementCertificate = subscriptionNode.Attribute("ManagementCertificate").Value,
-                        SubscriptionName = subscriptionNode.Attribute("Name").Value,
-                        SubscriptionId = subscriptionNode.Attribute("Id").Value
-                    });
-                });
+                
+                _locations = result.Locations;
             }
 
-            _subscriptions.ItemsSource = _subscriptionItems.Select(x => x.SubscriptionName);
-        }
-
-        private async void _subscriptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            _selectedSubscription = _subscriptionItems.First(x =>
-                x.SubscriptionName == (string)_subscriptions.SelectedItem);
-
-            await GetRegionList();
+            Commands.SetStatus.Execute("Regions Loaded", this);
         }
 
         private void OnTraceMenuItemClicked(object sender, RoutedEventArgs e)
         {
             var traceWindow = new TraceWindow();
             traceWindow.Show();
+        }
+
+        private void OnSelectPublishSettingsfileMenuClicked(object sender, RoutedEventArgs e)
+        {
+            var dlg = new OpenFileDialog();
+
+            dlg.FileOk += (dialog, a) =>
+            {
+                using (var fs = File.OpenRead(((OpenFileDialog)dialog).FileName))
+                {
+                    _subscriptionItems.Clear();
+
+                    var document = XDocument.Load(fs);
+
+                    var subscriptions = document
+                            .Element("PublishData")
+                                .Element("PublishProfile")
+                                    .Elements("Subscription");
+
+                    subscriptions.ToList().ForEach(subscriptionNode =>
+                    {
+                        _subscriptionItems.Add(new PublishSettingsSubscriptionItem
+                        {
+                            ManagementCertificate = subscriptionNode.Attribute("ManagementCertificate").Value,
+                            SubscriptionName = subscriptionNode.Attribute("Name").Value,
+                            SubscriptionId = subscriptionNode.Attribute("Id").Value
+                        });
+                    });
+                }
+
+                _selectSubscriptionMenuItem.ItemsSource = _subscriptionItems;
+
+                _selectSubscriptionMenuItem.IsEnabled = 
+                    (_selectSubscriptionMenuItem.Items.Count > 0);
+            };
+
+            dlg.Filter = "Publish Settings Files|*.publishsettings";
+            dlg.ShowDialog();
+        }
+
+        private void OnSubscriptionSelected(object sender, PublishSettingsSubscriptionItem item)
+        {
+            SelectedSubscription = item;
+            _selectedSubscriptionStatus.Text = SelectedSubscription.SubscriptionName;
+        }
+
+        private void OnRegionFilterMenuItemClicked(object sender, ExecutedRoutedEventArgs e)
+        {
+            var prm = e.Parameter;
+        }
+
+        private void OnSetStatus(object sender, ExecutedRoutedEventArgs e)
+        {
+            var status = e.Parameter;
+            _status.Text = status as string;
         }
     }
 
