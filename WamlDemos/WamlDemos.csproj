@@ -111,7 +111,11 @@
     <Compile Include="ViewModels\IHostedControlViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\StorageAccountManagementViewModel.cs" />
+    <Compile Include="ViewModels\VirtualMachinesManagementViewModel.cs" />
     <Compile Include="Views\IView.cs" />
+    <Compile Include="VirtualMachinesManagement.xaml.cs">
+      <DependentUpon>VirtualMachinesManagement.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WpfAppTracingInterceptor.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -130,6 +134,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TraceWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VirtualMachinesManagement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

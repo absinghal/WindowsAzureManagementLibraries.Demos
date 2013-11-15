@@ -3,8 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:WamlDemos"
              xmlns:viewModels="clr-namespace:WamlDemos.ViewModels"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=viewModels:StorageAccountManagementViewModel}">
+             xmlns:models="clr-namespace:Microsoft.WindowsAzure.Management.Storage.Models;assembly=Microsoft.WindowsAzure.Management.Storage"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=viewModels:StorageAccountManagementViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -17,11 +20,20 @@
         <TextBlock Text="Existing Storage Accounts"
                    Grid.Row="0"/>
         <ListBox ItemsSource="{Binding Path=StorageServices}" SelectedItem="{Binding Path=SelectedStorageService, Mode=TwoWay}" Grid.Row="1">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="ListBoxItem">
-                    <Setter Property="Content" Value="{Binding Path=ServiceName}"/>
-                </Style>
-            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Path=ServiceName,FallbackValue=''}"/>
+                        <Button Grid.Column="1" Content="Delete"
+                                Command="{Binding RelativeSource={RelativeSource AncestorType=local:StorageAccountManagement,Mode=FindAncestor},Path=ViewModel.DeleteAccountCommand}" 
+                                CommandParameter="{Binding}"/>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         <TextBlock Text="Connection String"
                    Grid.Row="2"/>
@@ -32,7 +44,8 @@
                    Grid.Row="4"/>
         <StackPanel Orientation="Vertical" Grid.Row="5">
             <TextBlock Text="Storage Account Name"/>
-            <TextBox Text="{Binding NewStorageAccountName}"/>
+            <TextBox Text="{Binding NewStorageAccountName, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBlock Text="{Binding IsNameOkay}"/>
             <TextBlock Text="Region" />
             <ComboBox ItemsSource="{Binding Path=Host.Locations}" SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
@@ -41,7 +54,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Button Content="Create" Command="{Binding CreateStorageAccountCommand}"/>
+            <Button Content="Create" Command="{Binding CreateStorageAccountCommand}" IsEnabled="{Binding IsCreateEnabled}"/>
         </StackPanel>
     </Grid>
 </UserControl>

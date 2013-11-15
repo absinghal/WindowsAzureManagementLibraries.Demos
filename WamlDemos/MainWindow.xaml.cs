@@ -21,7 +21,7 @@ namespace WamlDemos
 
         private static void OnClosing(object sender, CancelEventArgs cancelEventArgs)
         {
-            TraceWindow.Instance.Close();
+            TraceWindow.Instance.ReallyClose();
         }
     }
 }

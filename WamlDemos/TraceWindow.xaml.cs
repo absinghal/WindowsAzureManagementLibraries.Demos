@@ -24,5 +24,19 @@ namespace WamlDemos
             Action<string> traceAction = trace => Dispatcher.Invoke(() => Trace.Text = trace + Environment.NewLine + Trace.Text);
             CloudContext.Configuration.Tracing.AddTracingInterceptor(new WpfAppTracingInterceptor(traceAction));
         }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            e.Cancel = _preventClose;
+            Hide();
+        }
+
+        public void ReallyClose()
+        {
+            _preventClose = false;
+            base.Close();
+        }
+
+        private bool _preventClose = true;
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.WindowsAzure.Management.Models;
 using Microsoft.WindowsAzure.Management.Storage;
 using Microsoft.WindowsAzure.Management.Storage.Models;
 using WamlDemos.Commanding;
+using System.Threading.Tasks;
 
 namespace WamlDemos.ViewModels
 {
@@ -19,6 +20,18 @@ namespace WamlDemos.ViewModels
         private StorageServiceListResponse.StorageService _selectedStorageService;
         private List<StorageServiceListResponse.StorageService> _storageServices;
         private LocationsListResponse.Location _selectedLocation;
+        private StorageManagementClient _storageClient;
+        private string _nameOkayStatus = "[Enter Name]";
+        private bool _isCreateEnabled = false;
+
+        public MainWindowViewModel Host { get; private set; }
+
+        public string Name { get { return "Storage Accounts"; } }
+
+        public void SetHost(MainWindowViewModel host)
+        {
+            Host = host;
+        }
 
         public string ConnectionString
         {
@@ -30,14 +43,46 @@ namespace WamlDemos.ViewModels
             }
         }
 
+        public string IsNameOkay
+        {
+            get { return _nameOkayStatus; }
+            set 
+            { 
+                _nameOkayStatus = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsCreateEnabled
+        {
+            get { return _isCreateEnabled; }
+            set
+            {
+                _isCreateEnabled = value;
+
+                if (value)
+                    IsNameOkay = "Name is Okay";
+                else
+                    IsNameOkay = "Name is Not Okay";
+
+                OnPropertyChanged();
+            }
+        }
+
         public ActionCommand CreateStorageAccountCommand
         {
             get { return (Action)CreateStorageAccount; }
         }
 
-        public MainWindowViewModel Host { get; private set; }
+        public ActionCommand CheckStorageAccountNameCommand
+        {
+            get { return (Action)CheckStorageAccountName; }
+        }
 
-        public string Name { get { return "Storage Accounts"; } }
+        public ActionCommand<StorageServiceListResponse.StorageService> DeleteAccountCommand
+        {
+            get { return (Action<StorageServiceListResponse.StorageService>)DeleteAccount; }
+        }
 
         public string NewStorageAccountName
         {
@@ -45,6 +90,7 @@ namespace WamlDemos.ViewModels
             set
             {
                 _newStorageAccountName = value;
+                CheckStorageAccountName();
                 OnPropertyChanged();
             }
         }
@@ -70,33 +116,6 @@ namespace WamlDemos.ViewModels
             }
         }
 
-        public async void GetStorageAccounts()
-        {
-            Host.StatusMessage = "Getting Storage Accounts";
-
-            using (var storageClient = new StorageManagementClient(
-                new CertificateCloudCredentials(Host.SelectedSubscription.SubscriptionId,
-                    new X509Certificate2(
-                        Convert.FromBase64String(
-                            Host.SelectedSubscription.ManagementCertificate)))))
-            {
-                var result = await storageClient.StorageAccounts.ListAsync();
-                StorageServices = result.StorageServices.ToList();
-            }
-
-            Host.StatusMessage = "Storage Accounts Loaded";
-        }
-
-        public void SetHost(MainWindowViewModel host)
-        {
-            Host = host;
-        }
-
-        public void SubscriptionChanged()
-        {
-            GetStorageAccounts();
-        }
-
         public LocationsListResponse.Location SelectedLocation
         {
             get { return _selectedLocation; }
@@ -107,13 +126,71 @@ namespace WamlDemos.ViewModels
             }
         }
 
-        private void CreateStorageAccount()
+        public async void SubscriptionChanged()
         {
+            if (_storageClient != null)
+                _storageClient.Dispose();
+
+            _storageClient = new StorageManagementClient(
+                new CertificateCloudCredentials(Host.SelectedSubscription.SubscriptionId,
+                    new X509Certificate2(
+                        Convert.FromBase64String(
+                            Host.SelectedSubscription.ManagementCertificate))));
+
+            var result = await _storageClient.StorageAccounts.ListAsync();
+            StorageServices = result.StorageServices.ToList();
+
+            await GetStorageAccounts();
+        }
+
+        public async Task GetStorageAccounts()
+        {
+            Host.StatusMessage = "Getting Storage Accounts";
+
+            var result = await _storageClient.StorageAccounts.ListAsync();
+            StorageServices = result.StorageServices.ToList();
+
+            Host.StatusMessage = "Storage Accounts Loaded";
+        }
+
+        private async void DeleteAccount(StorageServiceListResponse.StorageService account)
+        {
+            Host.StatusMessage = "Deleting storage account " + account.ServiceName;
+
+            await _storageClient.StorageAccounts.DeleteAsync(account.ServiceName);
+            await GetStorageAccounts();
+
+            Host.StatusMessage = "Storage account " + account.ServiceName + " deleted";
+        }
+
+        private async void CreateStorageAccount()
+        {
+            Host.StatusMessage = "Creating Storage Account";
+
             var acct = new StorageAccountCreateParameters
             {
                 ServiceName = NewStorageAccountName,
                 Location = SelectedLocation.Name
             };
+
+            await _storageClient.StorageAccounts.CreateAsync(acct);
+
+            Host.StatusMessage = "Storage Account Created";
+
+            await GetStorageAccounts();
+        }
+
+        private async void CheckStorageAccountName()
+        {
+            try
+            {
+                var result = await _storageClient.StorageAccounts.CheckNameAvailabilityAsync(this._newStorageAccountName);
+                this.IsCreateEnabled = result.IsAvailable;
+            }
+            catch
+            {
+                this.IsCreateEnabled = false;
+            }
         }
 
         private async void SelectedStorageAccountChanged()
@@ -126,19 +203,12 @@ namespace WamlDemos.ViewModels
             }
 
             Host.StatusMessage = "Getting Connection String";
-                
-            using (var storageClient = new StorageManagementClient(
-                new CertificateCloudCredentials(Host.SelectedSubscription.SubscriptionId,
-                    new X509Certificate2(
-                        Convert.FromBase64String(
-                            Host.SelectedSubscription.ManagementCertificate)))))
-            {
-                var keys = await storageClient.StorageAccounts.GetKeysAsync(selected.ServiceName);
 
-                const string template = "DefaultEndpointsProtocol=http;AccountName={0};AccountKey={1};";
+            var keys = await _storageClient.StorageAccounts.GetKeysAsync(selected.ServiceName);
 
-                ConnectionString = string.Format(template, selected.ServiceName, keys.SecondaryKey);
-            }
+            const string template = "DefaultEndpointsProtocol=http;AccountName={0};AccountKey={1};";
+
+            ConnectionString = string.Format(template, selected.ServiceName, keys.SecondaryKey);
 
             Host.StatusMessage = "Connection String Received";
         }

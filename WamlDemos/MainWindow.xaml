@@ -23,7 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="30"/>
         </Grid.RowDefinitions>
 
         <TabControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding WAMLViewModels}" SelectedIndex="0">
@@ -38,18 +38,26 @@
         <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="Setup">
                 <MenuItem Header="Select Publish Settings File" Command="{Binding Path=SelectPublishSettingsFileCommand}" />
+                
+                
+                
                 <MenuItem IsEnabled="{Binding Path=SubscriptionItems.Count, Converter={StaticResource GreaterThanZero}}"
                           Header="Select Subscription"
                           ItemsSource="{Binding Path=SubscriptionItems}">
                     <MenuItem.ItemContainerStyle>
-                        <!-- Data Context is PublishSettingsSubscriptionItem here, can't attach designer properties for intellisense -->
                         <Style TargetType="MenuItem">
-                            <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow, Mode=FindAncestor}, Path=ViewModel.SelectSubscriptionCommand}"/>
+                            <Setter Property="Command" 
+                                    Value="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow, Mode=FindAncestor}, 
+                                    Path=ViewModel.SelectSubscriptionCommand}"/>
                             <Setter Property="CommandParameter" Value="{Binding}"/>
-                            <Setter Property="Header" Value="{Binding Path=SubscriptionName, TargetNullValue='(No Active Subscription)', FallbackValue='(No Active Subscription)'}"/>
+                            <Setter Property="Header" Value="{Binding Path=SubscriptionName, TargetNullValue='(No Active Subscription)', 
+                                FallbackValue='(No Active Subscription)'}"/>
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
+                
+                
+                
             </MenuItem>
             <MenuItem Header="Windows">
                 <MenuItem Header="Trace" Command="{Binding Path=TraceCommand}"/>
