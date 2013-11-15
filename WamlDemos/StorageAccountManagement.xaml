@@ -3,15 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:WamlDemos"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="500">
-
-    <UserControl.CommandBindings>
-        <CommandBinding Command="{x:Static local:Commands.CreateNewStorageAccount}"
-                        Executed="OnNewStorageAccountCreateRequest"/>
-    </UserControl.CommandBindings>
-
+             xmlns:viewModels="clr-namespace:WamlDemos.ViewModels"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=viewModels:StorageAccountManagementViewModel}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="20"/>
@@ -19,30 +12,36 @@
             <RowDefinition Height="20"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="20"/>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
         <TextBlock Text="Existing Storage Accounts"
                    Grid.Row="0"/>
-        <ListBox x:Name="_storageAccounts"
-                 Grid.Row="1" SelectionChanged="_storageAccounts_SelectionChanged">
+        <ListBox ItemsSource="{Binding Path=StorageServices}" SelectedItem="{Binding Path=SelectedStorageService, Mode=TwoWay}" Grid.Row="1">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
-                    <Setter Property="Content" Value="{Binding ServiceName}"/>
+                    <Setter Property="Content" Value="{Binding Path=ServiceName}"/>
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
         <TextBlock Text="Connection String"
                    Grid.Row="2"/>
-        <TextBox x:Name="_connectionString" TextWrapping="Wrap" 
+        <TextBox TextWrapping="Wrap" 
                  AcceptsReturn="True" 
-                 Grid.Row="3"/>
+                 Grid.Row="3" Text="{Binding Path=ConnectionString}"/>
         <TextBlock Text="New Storage Account"
                    Grid.Row="4"/>
-        <StackPanel Orientation="Vertical"
-                    Grid.Row="5">
+        <StackPanel Orientation="Vertical" Grid.Row="5">
             <TextBlock Text="Storage Account Name"/>
-            <TextBox x:Name="_newStorageAccountName"/>
-            <Button x:Name="_createStorageAccount" Content="Create" Click="_createStorageAccount_Click"/>
+            <TextBox Text="{Binding NewStorageAccountName}"/>
+            <TextBlock Text="Region" />
+            <ComboBox ItemsSource="{Binding Path=Host.Locations}" SelectedItem="{Binding SelectedLocation, Mode=TwoWay}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding DisplayName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <Button Content="Create" Command="{Binding CreateStorageAccountCommand}"/>
         </StackPanel>
     </Grid>
 </UserControl>
