@@ -2,12 +2,18 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:WamlDemos"
-        Title="MainWindow" Height="600" Width="800">
+        Title="MainWindow" Height="600" Width="800"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModels="clr-namespace:WamlDemos.ViewModels"
+        xmlns:converters="clr-namespace:WamlDemos.Converters"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=viewModels:MainWindowViewModel, IsDesignTimeCreatable=False}">
 
-    <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:Commands.SetStatus}"
-                        Executed="OnSetStatus"/>
-    </Window.CommandBindings>
+    <Window.Resources>
+        <converters:GreaterThanZeroConverter x:Key="GreaterThanZero" />
+        <converters:WAMLViewModelToViewConverter x:Key="WamlViewModelToView" />
+    </Window.Resources>
+    
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -20,40 +26,41 @@
             <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
 
-        <TabControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2">
-            <TabItem Header="Storage Accounts">
-                <local:StorageAccountManagement x:Name="_storageAccountManagement"/>
-            </TabItem>
+        <TabControl Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" ItemsSource="{Binding WAMLViewModels}" SelectedIndex="0">
+            <TabControl.ItemContainerStyle>
+                <Style TargetType="TabItem">
+                    <Setter Property="Header" Value="{Binding Name}" />
+                    <Setter Property="Content" Value="{Binding Converter={StaticResource WamlViewModelToView}}"></Setter>
+                </Style>
+            </TabControl.ItemContainerStyle>
         </TabControl>
 
-        <Menu IsMainMenu="True" Grid.Row="0" Grid.ColumnSpan="2" x:Name="_mainMenu">
+        <Menu IsMainMenu="True" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
             <MenuItem Header="Setup">
-                <MenuItem Header="Select Publish Settings File"
-                          Click="OnSelectPublishSettingsfileMenuClicked"/>
-                <MenuItem x:Name="_selectSubscriptionMenuItem"
-                          IsEnabled="false"
-                          Header="Select Subscription">
+                <MenuItem Header="Select Publish Settings File" Command="{Binding Path=SelectPublishSettingsFileCommand}" />
+                <MenuItem IsEnabled="{Binding Path=SubscriptionItems.Count, Converter={StaticResource GreaterThanZero}}"
+                          Header="Select Subscription"
+                          ItemsSource="{Binding Path=SubscriptionItems}">
                     <MenuItem.ItemContainerStyle>
+                        <!-- Data Context is PublishSettingsSubscriptionItem here, can't attach designer properties for intellisense -->
                         <Style TargetType="MenuItem">
-                            <Setter Property="Command" 
-                                    Value="{x:Static local:Commands.SubscriptionSelected}"/>
+                            <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow, Mode=FindAncestor}, Path=ViewModel.SelectSubscriptionCommand}"/>
                             <Setter Property="CommandParameter" Value="{Binding}"/>
-                            <Setter Property="Header" Value="{Binding SubscriptionName}"/>
+                            <Setter Property="Header" Value="{Binding Path=SubscriptionName, TargetNullValue='(No Active Subscription)', FallbackValue='(No Active Subscription)'}"/>
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="Windows">
-                <MenuItem Header="Trace" Click="OnTraceMenuItemClicked"/>
+                <MenuItem Header="Trace" Command="{Binding Path=TraceCommand}"/>
             </MenuItem>
         </Menu>
-        <StatusBar Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+        <StatusBar Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
             <StatusBarItem Width="200">
-                <TextBlock Text="No Subscription Selected" 
-                           x:Name="_selectedSubscriptionStatus" />
+                <TextBlock Text="{Binding Path=SelectedSubscription.SubscriptionName, FallbackValue='No subscription selected', TargetNullValue='No subscription selected'}" />
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Stretch">
-                <TextBlock Text="Status" x:Name="_status"/>
+                <TextBlock Text="{Binding Path=StatusMessage}"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>

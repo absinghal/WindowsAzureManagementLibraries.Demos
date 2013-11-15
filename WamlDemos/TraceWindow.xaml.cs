@@ -1,32 +1,28 @@
 ﻿using Microsoft.WindowsAzure;
 using System;
-using System.Windows;
 
 namespace WamlDemos
 {
-    public partial class TraceWindow : Window
+    public partial class TraceWindow
     {
-        public TraceWindow()
+        private static readonly Lazy<TraceWindow> TraceWindowLazy = new Lazy<TraceWindow>(() => new TraceWindow());
+
+        private TraceWindow()
         {
             InitializeComponent();
 
-            this.Loaded += (sender, e) =>
-                {
-                    StartTrace();
-                };
+            Loaded += (sender, e) => StartTrace();
+        }
+
+        public static TraceWindow Instance
+        {
+            get { return TraceWindowLazy.Value; }
         }
 
         private void StartTrace()
         {
-            var traceAction = new Action<string>(trace =>
-            {
-                Dispatcher.Invoke(() => _trace.Text =
-                    trace + Environment.NewLine + _trace.Text);
-            });
-
-            CloudContext.Configuration.Tracing.AddTracingInterceptor(
-                new WpfAppTracingInterceptor(traceAction)
-                );
+            Action<string> traceAction = trace => Dispatcher.Invoke(() => Trace.Text = trace + Environment.NewLine + Trace.Text);
+            CloudContext.Configuration.Tracing.AddTracingInterceptor(new WpfAppTracingInterceptor(traceAction));
         }
     }
 }

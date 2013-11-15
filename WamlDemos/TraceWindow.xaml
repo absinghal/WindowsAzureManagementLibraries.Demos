@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="API Trace Viewer" Height="300" Width="300">
     <Grid>
-        <TextBox x:Name="_trace" TextWrapping="Wrap" 
+        <TextBox x:Name="Trace" TextWrapping="Wrap" 
                  AcceptsReturn="True" Grid.Column="0" />
     </Grid>
 </Window>

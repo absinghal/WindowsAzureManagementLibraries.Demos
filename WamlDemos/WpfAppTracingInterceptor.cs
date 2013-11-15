@@ -7,7 +7,7 @@ namespace WamlDemos
 {
     public class WpfAppTracingInterceptor : Microsoft.WindowsAzure.ICloudTracingInterceptor
     {
-        private Action<string> _logAction;
+        private readonly Action<string> _logAction;
 
         public WpfAppTracingInterceptor(Action<string> logAction)
         {

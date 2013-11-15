@@ -66,6 +66,7 @@
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
@@ -95,13 +96,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Commands.cs" />
+    <Compile Include="Commanding\ActionCommand.cs" />
+    <Compile Include="Converters\GreaterThanZeroConverter.cs" />
+    <Compile Include="Converters\WAMLViewModelToViewConverter.cs" />
+    <Compile Include="Models\PublishSettingsSubscriptionItem.cs" />
+    <Compile Include="Navigation\ModelBasedNavigationHelper.cs" />
     <Compile Include="StorageAccountManagement.xaml.cs">
       <DependentUpon>StorageAccountManagement.xaml</DependentUpon>
     </Compile>
     <Compile Include="TraceWindow.xaml.cs">
       <DependentUpon>TraceWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\BindableBase.cs" />
+    <Compile Include="ViewModels\IHostedControlViewModel.cs" />
+    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\StorageAccountManagementViewModel.cs" />
+    <Compile Include="Views\IView.cs" />
     <Compile Include="WpfAppTracingInterceptor.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -152,6 +162,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.13\tools\Microsoft.Bcl.Build.targets')" />
   <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
