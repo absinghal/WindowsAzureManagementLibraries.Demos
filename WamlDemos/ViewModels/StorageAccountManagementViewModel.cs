@@ -184,7 +184,8 @@ namespace WamlDemos.ViewModels
         {
             try
             {
-                var result = await _storageClient.StorageAccounts.CheckNameAvailabilityAsync(this._newStorageAccountName);
+                var result = await _storageClient.StorageAccounts.CheckNameAvailabilityAsync(
+                    this._newStorageAccountName);
                 this.IsCreateEnabled = result.IsAvailable;
             }
             catch
@@ -192,6 +193,7 @@ namespace WamlDemos.ViewModels
                 this.IsCreateEnabled = false;
             }
         }
+
 
         private async void SelectedStorageAccountChanged()
         {
@@ -212,5 +214,6 @@ namespace WamlDemos.ViewModels
 
             Host.StatusMessage = "Connection String Received";
         }
+
     }
 }

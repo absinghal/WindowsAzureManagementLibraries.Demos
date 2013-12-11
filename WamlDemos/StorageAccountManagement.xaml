@@ -19,7 +19,10 @@
         </Grid.RowDefinitions>
         <TextBlock Text="Existing Storage Accounts"
                    Grid.Row="0"/>
-        <ListBox ItemsSource="{Binding Path=StorageServices}" SelectedItem="{Binding Path=SelectedStorageService, Mode=TwoWay}" Grid.Row="1">
+        <ListBox ItemsSource="{Binding Path=StorageServices}" 
+                 SelectedItem="{Binding Path=SelectedStorageService, Mode=TwoWay}" 
+                 MinHeight="100"
+                 Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>

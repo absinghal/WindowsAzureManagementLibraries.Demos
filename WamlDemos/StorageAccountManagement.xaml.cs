@@ -4,7 +4,7 @@ using WamlDemos.Views;
 
 namespace WamlDemos
 {
-    [Export(typeof (IView<StorageAccountManagementViewModel>))]
+    [Export(typeof(IView<StorageAccountManagementViewModel>))]
     public partial class StorageAccountManagement : IView<StorageAccountManagementViewModel>
     {
         public StorageAccountManagement()

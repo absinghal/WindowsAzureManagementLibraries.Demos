@@ -41,26 +41,42 @@
     <Reference Include="Microsoft.Threading.Tasks.Extensions">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.165\lib\net45\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Common">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Common.0.9.1-preview\lib\net45\Microsoft.WindowsAzure.Common.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Common, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Common.0.9.4-preview\lib\net45\Microsoft.WindowsAzure.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Common.NetFramework">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Common.0.9.1-preview\lib\net45\Microsoft.WindowsAzure.Common.NetFramework.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Common.NetFramework, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Common.0.9.4-preview\lib\net45\Microsoft.WindowsAzure.Common.NetFramework.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Management">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Management.0.9.1-preview\lib\portable-net45+sl50+wp80+win\Microsoft.WindowsAzure.Management.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Management, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.0.9.3-preview\lib\net40\Microsoft.WindowsAzure.Management.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Management.Compute">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Management.Compute.0.9.2-preview\lib\portable-net45+sl50+wp80+win\Microsoft.WindowsAzure.Management.Compute.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Management.Compute, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.Compute.0.9.3-preview\lib\net40\Microsoft.WindowsAzure.Management.Compute.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Management.Storage">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Management.Storage.0.9.0-preview\lib\portable-net45+sl50+wp80+win\Microsoft.WindowsAzure.Management.Storage.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Management.Scheduler">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.Scheduler.0.9.3-preview\lib\net40\Microsoft.WindowsAzure.Management.Scheduler.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Management.VirtualNetworks">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Management.VirtualNetworks.0.9.0-preview\lib\portable-net45+sl50+wp80+win\Microsoft.WindowsAzure.Management.VirtualNetworks.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Management.ServiceBus">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.ServiceBus.0.9.0-preview\lib\net40\Microsoft.WindowsAzure.Management.ServiceBus.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.Management.WebSites">
-      <HintPath>..\packages\Microsoft.WindowsAzure.Management.WebSites.0.9.0-preview\lib\portable-net45+sl50+wp80+win\Microsoft.WindowsAzure.Management.WebSites.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Management.Sql">
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.Sql.0.9.0-preview\lib\net40\Microsoft.WindowsAzure.Management.Sql.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Management.Storage, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.Storage.0.9.1-preview\lib\net40\Microsoft.WindowsAzure.Management.Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Management.VirtualNetworks, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.VirtualNetworks.0.9.1-preview\lib\net40\Microsoft.WindowsAzure.Management.VirtualNetworks.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Management.WebSites, Version=0.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.WindowsAzure.Management.WebSites.0.9.1-preview\lib\net40\Microsoft.WindowsAzure.Management.WebSites.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -101,8 +117,8 @@
     <Compile Include="Converters\WAMLViewModelToViewConverter.cs" />
     <Compile Include="Models\PublishSettingsSubscriptionItem.cs" />
     <Compile Include="Navigation\ModelBasedNavigationHelper.cs" />
-    <Compile Include="StorageAccountManagement.xaml.cs">
-      <DependentUpon>StorageAccountManagement.xaml</DependentUpon>
+    <Compile Include="SqlDatabaseManagement.xaml.cs">
+      <DependentUpon>SqlDatabaseManagement.xaml</DependentUpon>
     </Compile>
     <Compile Include="TraceWindow.xaml.cs">
       <DependentUpon>TraceWindow.xaml</DependentUpon>
@@ -110,12 +126,8 @@
     <Compile Include="ViewModels\BindableBase.cs" />
     <Compile Include="ViewModels\IHostedControlViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
-    <Compile Include="ViewModels\StorageAccountManagementViewModel.cs" />
-    <Compile Include="ViewModels\VirtualMachinesManagementViewModel.cs" />
+    <Compile Include="ViewModels\SqlViewModel.cs" />
     <Compile Include="Views\IView.cs" />
-    <Compile Include="VirtualMachinesManagement.xaml.cs">
-      <DependentUpon>VirtualMachinesManagement.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WpfAppTracingInterceptor.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -129,15 +141,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="StorageAccountManagement.xaml">
+    <Page Include="SqlDatabaseManagement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TraceWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="VirtualMachinesManagement.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
